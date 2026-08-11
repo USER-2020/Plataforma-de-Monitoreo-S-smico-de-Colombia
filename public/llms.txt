@@ -1,0 +1,23 @@
+# terracosismos
+
+> terracosismos es una plataforma web en español para consultar y visualizar actividad sísmica de Colombia y configurar alertas personalizadas por correo.
+
+## Secciones públicas
+
+- Monitor en vivo: / — mapa y lista de eventos sísmicos recientes.
+- Historial: /sismos — consulta y filtros de eventos almacenados.
+- Estadísticas: /estadisticas — indicadores agregados de actividad sísmica.
+- API: /api/earthquakes — eventos consultables mediante filtros geográficos, temporales y de magnitud.
+
+## Datos y alcance
+
+- Los eventos sísmicos provienen de proveedores externos configurados por la aplicación, incluidos el Servicio Geológico Colombiano y EMSC/SeismicPortal.
+- La ubicación administrativa se complementa con datos geográficos oficiales de DIVIPOLA del DANE.
+- Los datos sísmicos pueden ser preliminares, cambiar después de su publicación y no constituyen una predicción ni una alerta temprana oficial.
+- terracosismos no afirma predecir terremotos y no reemplaza las comunicaciones de las autoridades colombianas.
+
+## Identidad
+
+- Nombre oficial de la aplicación: terracosismos
+- Idioma principal: español de Colombia (es-CO)
+- Cobertura geográfica principal: Colombia
