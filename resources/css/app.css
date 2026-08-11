@@ -69,6 +69,11 @@ body {
     color: #7815a5;
 }
 
+#terracosismos-klaro {
+    position: relative;
+    z-index: 2147483647 !important;
+}
+
 #terracosismos-klaro .cookie-notice,
 #terracosismos-klaro .cookie-modal .cm-modal {
     border: 1px solid #eadff5;
@@ -77,8 +82,18 @@ body {
 }
 
 #terracosismos-klaro .cookie-notice {
-    margin: 14px;
-    max-width: 520px;
+    right: auto !important;
+    bottom: 20px;
+    left: 50% !important;
+    z-index: 2147483647 !important;
+    width: min(680px, calc(100vw - 28px));
+    max-width: 680px;
+    margin: 0;
+    transform: translateX(-50%);
+}
+
+#terracosismos-klaro .cookie-modal {
+    z-index: 2147483647 !important;
 }
 
 #terracosismos-klaro .cm-btn.cm-btn-success,
@@ -165,11 +180,13 @@ body {
 
     #terracosismos-klaro .cookie-notice {
         bottom: calc(76px + env(safe-area-inset-bottom));
-        left: max(8px, env(safe-area-inset-left));
-        right: max(8px, env(safe-area-inset-right));
+        left: 50% !important;
+        right: auto !important;
+        width: calc(100vw - max(16px, env(safe-area-inset-left) + env(safe-area-inset-right)));
         margin: 0;
         max-height: calc(100dvh - 110px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
         overflow: auto;
+        transform: translateX(-50%);
     }
 
     #bmc-wbtn,
@@ -177,5 +194,23 @@ body {
         bottom: calc(84px + env(safe-area-inset-bottom)) !important;
         right: max(12px, env(safe-area-inset-right)) !important;
         z-index: 35 !important;
+    }
+
+    #bmc-iframe {
+        position: fixed !important;
+        box-sizing: border-box !important;
+        top: max(8px, env(safe-area-inset-top)) !important;
+        right: 12px !important;
+        bottom: auto !important;
+        left: 12px !important;
+        width: min(600px, calc(100vw - 24px)) !important;
+        height: calc(100dvh - 92px - env(safe-area-inset-top) - env(safe-area-inset-bottom)) !important;
+        max-width: 600px !important;
+        max-height: calc(100dvh - 92px - env(safe-area-inset-top) - env(safe-area-inset-bottom)) !important;
+        margin-inline: auto !important;
+        border-radius: 18px !important;
+        overflow-y: auto !important;
+        overscroll-behavior: contain;
+        z-index: 55 !important;
     }
 }
