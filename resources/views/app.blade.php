@@ -51,6 +51,7 @@
             'browserRequirements' => 'Requiere JavaScript y un navegador web moderno.',
             'isAccessibleForFree' => true,
             'inLanguage' => 'es-CO',
+            'privacyPolicy' => route('privacy'),
             'about' => ['@type' => 'Thing', 'name' => 'Actividad sísmica de Colombia'],
         ]],
     ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}</script>
@@ -60,5 +61,6 @@
 </head>
 <body>
     @inertia
+    <script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="juanfernandozuluaga" data-description="Apoya terracosismos en Buy Me a Coffee" data-message="" data-color="#BD5FFF" data-position="Right" data-x_margin="18" data-y_margin="18"></script>
 </body>
 </html>

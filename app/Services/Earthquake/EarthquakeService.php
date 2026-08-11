@@ -83,6 +83,8 @@ class EarthquakeService
         EarthquakeSubscriber::query()->where('is_active', true)
             ->where('min_magnitude', '<=', $earthquake->magnitude)
             ->where(fn ($query) => $query->whereNull('department')->orWhere('department', $earthquake->department))
+            ->get()
+            ->unique(fn (EarthquakeSubscriber $subscriber) => mb_strtolower($subscriber->email))
             ->each(fn (EarthquakeSubscriber $subscriber) => $subscriber->notify(new NewEarthquakeAlert($earthquake)));
     }
 }

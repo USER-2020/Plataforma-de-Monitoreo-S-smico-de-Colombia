@@ -2,22 +2,22 @@
 
 > terracosismos es una plataforma web en español para consultar y visualizar actividad sísmica de Colombia y configurar alertas personalizadas por correo.
 
-## Secciones públicas
+La plataforma presenta información sísmica preliminar obtenida de proveedores externos y la complementa con ubicación administrativa oficial. Su cobertura geográfica principal es Colombia y su idioma es español de Colombia (`es-CO`). terracosismos no predice terremotos ni reemplaza las comunicaciones de las autoridades colombianas.
 
-- Monitor en vivo: / — mapa y lista de eventos sísmicos recientes.
-- Historial: /sismos — consulta y filtros de eventos almacenados.
-- Estadísticas: /estadisticas — indicadores agregados de actividad sísmica.
-- API: /api/earthquakes — eventos consultables mediante filtros geográficos, temporales y de magnitud.
+## Recursos principales
 
-## Datos y alcance
+- [Monitor sísmico](https://terracosismos.online/): Mapa y lista de eventos sísmicos recientes de Colombia.
+- [Historial de sismos](https://terracosismos.online/sismos): Consulta y filtros de los eventos almacenados.
+- [Estadísticas sísmicas](https://terracosismos.online/estadisticas): Indicadores agregados de actividad sísmica.
+- [API de eventos](https://terracosismos.online/api/earthquakes): Datos sísmicos consultables con filtros geográficos, temporales y de magnitud.
+- [Privacidad y cookies](https://terracosismos.online/privacidad): Política de consentimiento, inventario de cookies y uso responsable de analítica y auditoría.
 
-- Los eventos sísmicos provienen de proveedores externos configurados por la aplicación, incluidos el Servicio Geológico Colombiano y EMSC/SeismicPortal.
-- La ubicación administrativa se complementa con datos geográficos oficiales de DIVIPOLA del DANE.
-- Los datos sísmicos pueden ser preliminares, cambiar después de su publicación y no constituyen una predicción ni una alerta temprana oficial.
-- terracosismos no afirma predecir terremotos y no reemplaza las comunicaciones de las autoridades colombianas.
+## Información para agentes
 
-## Identidad
+- [Contexto ampliado](https://terracosismos.online/llms-full.txt): Descripción de identidad, fuentes, campos, alcance y limitaciones de los datos.
+- [Sitemap XML](https://terracosismos.online/sitemap.xml): Índice de las páginas públicas principales.
+- [Reglas de rastreo](https://terracosismos.online/robots.txt): Directivas públicas para rastreadores.
 
-- Nombre oficial de la aplicación: terracosismos
-- Idioma principal: español de Colombia (es-CO)
-- Cobertura geográfica principal: Colombia
+## Optional
+
+- [Manifiesto PWA](https://terracosismos.online/build/manifest.webmanifest): Identidad y configuración de la aplicación web instalable.

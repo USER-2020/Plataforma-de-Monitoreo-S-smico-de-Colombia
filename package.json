@@ -19,6 +19,7 @@
     },
     "dependencies": {
         "@inertiajs/react": "^2.0.0",
+        "klaro": "^0.7.21",
         "laravel-echo": "^2.4.0",
         "leaflet": "^1.9.4",
         "pusher-js": "^8.6.0",

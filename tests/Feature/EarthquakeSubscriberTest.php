@@ -45,7 +45,7 @@ class EarthquakeSubscriberTest extends TestCase
         ]);
     }
 
-    public function test_an_email_address_cannot_be_registered_twice(): void
+    public function test_the_same_alert_preference_cannot_be_registered_twice(): void
     {
         Notification::fake();
         EarthquakeSubscriber::create([
@@ -59,14 +59,34 @@ class EarthquakeSubscriberTest extends TestCase
         $this->from('/')->post('/alertas/suscribir', [
             'name' => 'Ana otra vez',
             'email' => 'ana@example.com',
-            'min_magnitude' => 2,
+            'min_magnitude' => 4,
             'department' => null,
         ])->assertRedirect('/')->assertSessionHasErrors([
-            'email' => 'Este correo ya está registrado para recibir alertas.',
+            'email' => 'Este correo ya tiene una alerta con la misma magnitud y el mismo departamento.',
         ]);
 
         $this->assertDatabaseCount('earthquake_subscribers', 1);
         Notification::assertNothingSent();
+    }
+
+    public function test_one_email_can_register_different_alert_preferences(): void
+    {
+        Notification::fake();
+
+        foreach ([
+            ['min_magnitude' => 4, 'department' => 'Caldas'],
+            ['min_magnitude' => 5, 'department' => 'Caldas'],
+            ['min_magnitude' => 4, 'department' => 'Santander'],
+        ] as $preference) {
+            $this->post('/alertas/suscribir', [
+                'name' => 'Ana',
+                'email' => 'ana@example.com',
+                ...$preference,
+            ])->assertRedirect()->assertSessionHasNoErrors();
+        }
+
+        $this->assertDatabaseCount('earthquake_subscribers', 3);
+        Notification::assertCount(3);
     }
 
     public function test_the_welcome_email_uses_the_terracosismos_brand(): void

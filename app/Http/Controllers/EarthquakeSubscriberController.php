@@ -11,15 +11,27 @@ class EarthquakeSubscriberController extends Controller
 {
     public function store(StoreEarthquakeSubscriberRequest $request)
     {
-        if (EarthquakeSubscriber::where('email', $request->validated('email'))->exists()) {
-            throw ValidationException::withMessages(['email' => 'Este correo ya está registrado para recibir alertas.']);
+        $validated = $request->validated();
+        $preferenceKey = EarthquakeSubscriber::preferenceKey(
+            $validated['email'],
+            (float) $validated['min_magnitude'],
+            $validated['department'] ?? null,
+        );
+
+        if (EarthquakeSubscriber::where('preference_key', $preferenceKey)->exists()) {
+            throw ValidationException::withMessages([
+                'email' => 'Este correo ya tiene una alerta con la misma magnitud y el mismo departamento.',
+            ]);
         }
 
         $subscriber = EarthquakeSubscriber::create([
-            ...$request->validated(), 'is_active' => true, 'subscribed_at' => now(),
+            ...$validated,
+            'preference_key' => $preferenceKey,
+            'is_active' => true,
+            'subscribed_at' => now(),
         ]);
         $subscriber->notifyNow(new WelcomeEarthquakeAlerts);
 
-        return back()->with('success', '¡Listo! Tus preferencias de alerta quedaron activadas.');
+        return back()->with('success', '¡Listo! Tu nueva alerta quedó activada.');
     }
 }

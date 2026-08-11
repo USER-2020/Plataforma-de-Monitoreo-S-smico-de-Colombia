@@ -42,6 +42,7 @@ class EarthquakeSyncTest extends TestCase
     {
         Notification::fake();
         $subscriber = EarthquakeSubscriber::create(['name' => 'Ana', 'email' => 'ana@example.com', 'min_magnitude' => 4, 'department' => 'Santander', 'is_active' => true, 'subscribed_at' => now()]);
+        EarthquakeSubscriber::create(['name' => 'Ana', 'email' => 'ana@example.com', 'min_magnitude' => 3, 'department' => null, 'is_active' => true, 'subscribed_at' => now()]);
         $provider = new class implements EarthquakeProviderInterface
         {
             public function name(): string
@@ -58,5 +59,6 @@ class EarthquakeSyncTest extends TestCase
         (new EarthquakeService($provider))->sync();
 
         Notification::assertSentTo($subscriber, NewEarthquakeAlert::class);
+        Notification::assertSentTimes(NewEarthquakeAlert::class, 1);
     }
 }
