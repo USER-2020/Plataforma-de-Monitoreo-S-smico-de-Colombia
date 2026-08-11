@@ -1,18 +1,13 @@
-import {useEffect, useRef} from 'react';
+import {useEffect} from 'react';
 import {usePage} from '@inertiajs/react';
 import {Toaster, toast} from 'react-hot-toast';
 
 export default function SystemToasts() {
     const {errors = {}, flash = {}} = usePage().props;
-    const lastNotification = useRef('');
-
     useEffect(() => {
         const messages = [flash?.success, flash?.error, ...Object.values(errors)].filter(Boolean);
-        const signature = JSON.stringify(messages);
+        if (!messages.length) return;
 
-        if (!messages.length || signature === lastNotification.current) return;
-
-        lastNotification.current = signature;
         if (flash?.success) toast.success(flash.success, {id: `success-${flash.success}`});
         if (flash?.error) toast.error(flash.error, {id: `error-${flash.error}`});
         Object.entries(errors).forEach(([field, message]) => {

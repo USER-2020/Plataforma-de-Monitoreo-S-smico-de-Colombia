@@ -2,15 +2,11 @@
 
 namespace App\Notifications;
 
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class WelcomeEarthquakeAlerts extends Notification implements ShouldQueue
+class WelcomeEarthquakeAlerts extends Notification
 {
-    use Queueable;
-
     public function via(object $notifiable): array
     {
         return ['mail'];
@@ -28,6 +24,7 @@ class WelcomeEarthquakeAlerts extends Notification implements ShouldQueue
             ->line("Recibirás alertas para {$magnitude} en {$area}.")
             ->line('Los eventos son preliminares y no constituyen una predicción ni una alerta oficial.')
             ->action('Abrir monitor sísmico', route('dashboard'))
-            ->line('Gracias por usar terracosismos.');
+            ->line('Gracias por usar terracosismos.')
+            ->salutation('Saludos, el equipo de terracosismos');
     }
 }

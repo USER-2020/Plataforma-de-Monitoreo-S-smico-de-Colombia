@@ -28,6 +28,7 @@ class NewEarthquakeAlert extends Notification implements ShouldQueue
             ->line('Magnitud: '.$this->earthquake->magnitude)
             ->line('Ubicación: '.$this->earthquake->place)
             ->line('Profundidad: '.$this->earthquake->depth_km.' km')
-            ->action('Ver evento', route('earthquakes.show', $this->earthquake));
+            ->action('Ver evento', route('earthquakes.show', $this->earthquake))
+            ->salutation('Saludos, el equipo de terracosismos');
     }
 }

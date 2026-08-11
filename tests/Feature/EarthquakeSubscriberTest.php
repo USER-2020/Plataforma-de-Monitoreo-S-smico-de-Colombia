@@ -68,4 +68,21 @@ class EarthquakeSubscriberTest extends TestCase
         $this->assertDatabaseCount('earthquake_subscribers', 1);
         Notification::assertNothingSent();
     }
+
+    public function test_the_welcome_email_uses_the_terracosismos_brand(): void
+    {
+        $subscriber = new EarthquakeSubscriber([
+            'name' => 'Ana',
+            'email' => 'ana@example.com',
+            'min_magnitude' => 0,
+        ]);
+
+        $html = (new WelcomeEarthquakeAlerts)->toMail($subscriber)->render()->toHtml();
+
+        $this->assertStringContainsString('terracosismos', $html);
+        $this->assertStringContainsString('#861bc1', strtolower($html));
+        $this->assertStringContainsString('https://terracosismos.online', $html);
+        $this->assertStringContainsString('https://terracosismos.online/icons/pwa-192.png', $html);
+        $this->assertStringContainsString('Monitoreo sísmico de Colombia', $html);
+    }
 }

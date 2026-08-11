@@ -18,7 +18,7 @@ class EarthquakeSubscriberController extends Controller
         $subscriber = EarthquakeSubscriber::create([
             ...$request->validated(), 'is_active' => true, 'subscribed_at' => now(),
         ]);
-        $subscriber->notify(new WelcomeEarthquakeAlerts);
+        $subscriber->notifyNow(new WelcomeEarthquakeAlerts);
 
         return back()->with('success', '¡Listo! Tus preferencias de alerta quedaron activadas.');
     }
