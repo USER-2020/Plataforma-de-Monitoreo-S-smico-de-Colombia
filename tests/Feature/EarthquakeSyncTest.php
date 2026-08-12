@@ -67,11 +67,16 @@ class EarthquakeSyncTest extends TestCase
     {
         Notification::fake();
         $subscriber = EarthquakeSubscriber::create(['name' => 'Ana', 'email' => 'ana@example.com', 'min_magnitude' => 3, 'department' => null, 'is_active' => true, 'subscribed_at' => now()]);
-        $occurredAt = CarbonImmutable::now();
+        $occurredAt = CarbonImmutable::now('UTC');
         $provider = new class($occurredAt) implements EarthquakeProviderInterface
         {
             public function __construct(private CarbonImmutable $occurredAt) {}
-            public function name(): string { return 'multi'; }
+
+            public function name(): string
+            {
+                return 'multi';
+            }
+
             public function latest(): array
             {
                 return [

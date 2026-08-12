@@ -25,14 +25,16 @@ class GeofonEarthquakeProvider implements EarthquakeProviderInterface
             'format' => 'text', 'starttime' => now()->subDays(config('earthquakes.sync_days'))->utc()->toIso8601String(),
             'minlat' => config('earthquakes.coverage.min_lat'), 'maxlat' => config('earthquakes.coverage.max_lat'),
             'minlon' => config('earthquakes.coverage.min_lon'), 'maxlon' => config('earthquakes.coverage.max_lon'),
-            'minmagnitude' => 0, 'orderby' => 'time-desc', 'limit' => 1000,
+            'minmagnitude' => 0, 'limit' => 1000,
         ])->throw()->body();
         Cache::put('earthquakes.geofon.cooldown', true, now()->addMinutes($interval));
 
         return collect(preg_split('/\R/', trim($text)))
             ->reject(fn ($line) => $line === '' || str_starts_with($line, '#'))
             ->map(fn ($line) => $this->normalize(explode('|', $line)))
-            ->filter()->values()->all();
+            ->filter()
+            ->sortByDesc(fn (EarthquakeData $event) => $event->occurredAt->timestamp)
+            ->values()->all();
     }
 
     public function normalize(array $row): ?EarthquakeData

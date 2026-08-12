@@ -8,6 +8,8 @@ use Throwable;
 
 class MultiEarthquakeProvider implements EarthquakeProviderInterface
 {
+    private array $diagnostics = [];
+
     public function __construct(private array $providers) {}
 
     public function name(): string
@@ -20,12 +22,24 @@ class MultiEarthquakeProvider implements EarthquakeProviderInterface
         $events = [];
         $successfulProviders = 0;
         $errors = [];
+        $this->diagnostics = [];
         foreach ($this->providers as $provider) {
             try {
-                array_push($events, ...$provider->latest());
+                $providerEvents = $provider->latest();
+                array_push($events, ...$providerEvents);
                 $successfulProviders++;
+                $this->diagnostics[$provider->name()] = [
+                    'status' => 'success',
+                    'received' => count($providerEvents),
+                    'error' => null,
+                ];
             } catch (Throwable $exception) {
                 $errors[$provider->name()] = $exception->getMessage();
+                $this->diagnostics[$provider->name()] = [
+                    'status' => 'failed',
+                    'received' => 0,
+                    'error' => $exception->getMessage(),
+                ];
                 Log::warning('Proveedor sísmico no disponible', [
                     'provider' => $provider->name(), 'message' => $exception->getMessage(),
                 ]);
@@ -37,5 +51,10 @@ class MultiEarthquakeProvider implements EarthquakeProviderInterface
         }
 
         return $events;
+    }
+
+    public function diagnostics(): array
+    {
+        return $this->diagnostics;
     }
 }

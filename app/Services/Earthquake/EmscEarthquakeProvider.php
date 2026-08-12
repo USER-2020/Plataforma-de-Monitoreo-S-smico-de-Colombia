@@ -17,11 +17,10 @@ class EmscEarthquakeProvider implements EarthquakeProviderInterface
     {
         $json = Http::acceptJson()->retry(2, 300)->timeout(20)->get(config('earthquakes.providers.emsc.url'), ['format' => 'json', 'limit' => 1000, 'orderby' => 'time', 'start' => now()->subDays(config('earthquakes.sync_days'))->utc()->toIso8601String(), 'minmag' => 0, 'minlat' => config('earthquakes.coverage.min_lat'), 'maxlat' => config('earthquakes.coverage.max_lat'), 'minlon' => config('earthquakes.coverage.min_lon'), 'maxlon' => config('earthquakes.coverage.max_lon')])->throw()->json();
 
+        // La consulta FDSN ya limita los resultados al recuadro geográfico
+        // configurado. No se filtra por flynn_region porque las etiquetas de
+        // eventos fronterizos no siempre contienen literalmente "COLOMBIA".
         return collect($json['features'] ?? [])
-            ->filter(fn (array $feature) => str_contains(
-                strtoupper((string) data_get($feature, 'properties.flynn_region')),
-                'COLOMBIA',
-            ))
             ->map(fn (array $f) => $this->normalize($f))->filter()->values()->all();
     }
 

@@ -31,6 +31,7 @@ EARTHQUAKE_PROVIDER=multi
 EARTHQUAKE_SYNC_DAYS=7
 
 EARTHQUAKE_SGC_URL=https://apicatalogador.sgc.gov.co/api/events/search/
+EARTHQUAKE_RECENT_HOURS=24
 EARTHQUAKE_SGC_SYNC_HOURS=48
 
 EARTHQUAKE_EMSC_URL=https://www.seismicportal.eu/fdsnws/event/1/query

@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'provider' => env('EARTHQUAKE_PROVIDER', 'multi'), 'sync_days' => (int) env('EARTHQUAKE_SYNC_DAYS', 7), 'nearby_radius_km' => (int) env('EARTHQUAKE_NEARBY_RADIUS', 150),
+    'provider' => env('EARTHQUAKE_PROVIDER', 'multi'), 'sync_days' => (int) env('EARTHQUAKE_SYNC_DAYS', 7), 'recent_hours' => (int) env('EARTHQUAKE_RECENT_HOURS', 24), 'nearby_radius_km' => (int) env('EARTHQUAKE_NEARBY_RADIUS', 150),
     'alert_max_age_minutes' => (int) env('EARTHQUAKE_ALERT_MAX_AGE_MINUTES', 30),
     'coverage' => ['min_lat' => -5, 'max_lat' => 15, 'min_lon' => -84, 'max_lon' => -66],
     'deduplication' => ['seconds' => 90, 'distance_km' => 50, 'magnitude_delta' => 0.8],

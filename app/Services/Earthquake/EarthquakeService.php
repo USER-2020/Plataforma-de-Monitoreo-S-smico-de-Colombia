@@ -2,8 +2,8 @@
 
 namespace App\Services\Earthquake;
 
-use App\Models\Earthquake;
 use App\Data\EarthquakeData;
+use App\Models\Earthquake;
 use App\Models\EarthquakeSourceReport;
 use App\Models\EarthquakeSubscriber;
 use App\Models\EarthquakeSyncLog;
@@ -40,7 +40,11 @@ class EarthquakeService
 
             $sources = collect($events)->countBy(fn (EarthquakeData $event) => $event->source)->all();
 
-            return compact('created', 'updated', 'sources') + ['received' => count($events)];
+            $providers = method_exists($this->provider, 'diagnostics')
+                ? $this->provider->diagnostics()
+                : [$this->provider->name() => ['status' => 'success', 'received' => count($events), 'error' => null]];
+
+            return compact('created', 'updated', 'sources', 'providers') + ['received' => count($events)];
         } catch (Throwable $e) {
             $log->update(['finished_at' => now(), 'status' => 'failed', 'error_message' => $e->getMessage()]);
             Log::error('Earthquake synchronization failed', ['provider' => $this->provider->name(), 'exception' => $e]);
@@ -113,9 +117,16 @@ class EarthquakeService
             ->when(isset($filters['latitude'],$filters['longitude'],$filters['radius']), fn ($q) => $this->withinRadius($q, (float) $filters['latitude'], (float) $filters['longitude'], (float) $filters['radius']));
     }
 
-    public function recent(int $days = 7, int $limit = 100)
+    public function recent(?int $hours = null, int $limit = 100)
     {
-        return Earthquake::recent($days)->withCount('sourceReports')->latest('occurred_at')->limit($limit)->get();
+        $hours ??= (int) config('earthquakes.recent_hours', 24);
+
+        return Earthquake::query()
+            ->where('occurred_at', '>=', now()->subHours($hours))
+            ->withCount('sourceReports')
+            ->latest('occurred_at')
+            ->limit($limit)
+            ->get();
     }
 
     public function statistics(): array
@@ -142,6 +153,7 @@ class EarthquakeService
     {
         if ($earthquake->occurred_at->lt(now()->subMinutes(config('earthquakes.alert_max_age_minutes', 30)))) {
             Log::info('Sismo histórico almacenado sin generar alertas', ['earthquake_id' => $earthquake->id]);
+
             return;
         }
 
