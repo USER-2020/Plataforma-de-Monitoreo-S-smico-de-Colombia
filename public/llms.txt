@@ -1,23 +1,33 @@
 # terracosismos
 
-> terracosismos es una plataforma web en español para consultar y visualizar actividad sísmica de Colombia y configurar alertas personalizadas por correo.
+> Plataforma web para consultar actividad sismica de Colombia y crear alertas personalizadas por correo.
 
-La plataforma presenta información sísmica preliminar obtenida de proveedores externos y la complementa con ubicación administrativa oficial. Su cobertura geográfica principal es Colombia y su idioma es español de Colombia (`es-CO`). terracosismos no predice terremotos ni reemplaza las comunicaciones de las autoridades colombianas.
+terracosismos presenta eventos reportados por redes sismologicas externas. Los datos pueden ser preliminares y cambiar despues de su publicacion. La plataforma no predice terremotos y no sustituye las comunicaciones oficiales de las autoridades colombianas.
 
-## Recursos principales
+## Navegacion principal
 
-- [Monitor sísmico](https://terracosismos.online/): Mapa y lista de eventos sísmicos recientes de Colombia.
-- [Historial de sismos](https://terracosismos.online/sismos): Consulta y filtros de los eventos almacenados.
-- [Estadísticas sísmicas](https://terracosismos.online/estadisticas): Indicadores agregados de actividad sísmica.
-- [API de eventos](https://terracosismos.online/api/earthquakes): Datos sísmicos consultables con filtros geográficos, temporales y de magnitud.
-- [Privacidad y cookies](https://terracosismos.online/privacidad): Política de consentimiento, inventario de cookies y uso responsable de analítica y auditoría.
+- [Monitor sismico](https://terracosismos.online/)
+- [Historial de sismos](https://terracosismos.online/sismos)
+- [Estadisticas](https://terracosismos.online/estadisticas)
+- [Privacidad y cookies](https://terracosismos.online/privacidad)
 
-## Información para agentes
+## Datos publicos
 
-- [Contexto ampliado](https://terracosismos.online/llms-full.txt): Descripción de identidad, fuentes, campos, alcance y limitaciones de los datos.
-- [Sitemap XML](https://terracosismos.online/sitemap.xml): Índice de las páginas públicas principales.
-- [Reglas de rastreo](https://terracosismos.online/robots.txt): Directivas públicas para rastreadores.
+- [API de eventos](https://terracosismos.online/api/earthquakes)
+- [Sitemap XML](https://terracosismos.online/sitemap.xml)
+- [Reglas de rastreo](https://terracosismos.online/robots.txt)
+- [Manifiesto PWA](https://terracosismos.online/build/manifest.webmanifest)
 
-## Optional
+## Informacion para agentes
 
-- [Manifiesto PWA](https://terracosismos.online/build/manifest.webmanifest): Identidad y configuración de la aplicación web instalable.
+- [Contexto ampliado](https://terracosismos.online/llms-full.txt)
+- [Servicio Geologico Colombiano](https://www.sgc.gov.co/sismos)
+- [Unidad Nacional para la Gestion del Riesgo](https://portal.gestiondelriesgo.gov.co/)
+
+## Alcance
+
+- Idioma principal: espanol de Colombia.
+- Cobertura principal: Colombia y zonas fronterizas cercanas.
+- Fuentes sismicas: SGC, EMSC, USGS y GEOFON.
+- Ubicacion administrativa: datos de referencia DANE.
+- Actualizacion: sincronizacion periodica y recepcion EMSC opcional.

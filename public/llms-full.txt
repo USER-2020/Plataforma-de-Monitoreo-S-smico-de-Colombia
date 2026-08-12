@@ -1,26 +1,47 @@
-# terracosismos — contexto ampliado
+# terracosismos - contexto ampliado
 
-> Documento de contexto sobre terracosismos para buscadores, agentes y asistentes de inteligencia artificial.
+> Informacion estructurada sobre terracosismos para buscadores, agentes y asistentes de inteligencia artificial.
 
-terracosismos monitorea eventos sísmicos reportados para Colombia. La aplicación permite explorar un mapa, consultar el historial, revisar estadísticas y registrar preferencias para recibir alertas por correo electrónico.
+## Descripcion
 
-La aplicación utiliza Klaro Open Source para administrar el consentimiento. La analítica y la auditoría permanecen desactivadas hasta que el visitante las autoriza. Las acciones auditadas excluyen el contenido de formularios y los datos sensibles; la dirección IP autorizada se conserva cifrada. Buy Me a Coffee es un enlace externo visible de apoyo al proyecto y no condiciona el acceso a la plataforma.
+terracosismos monitorea eventos sismicos reportados para Colombia. Permite explorar un mapa, consultar un historial, revisar estadisticas y registrar preferencias para recibir alertas por correo electronico.
 
-## Identidad y navegación
+Los eventos son informativos y pueden ser modificados por sus fuentes. terracosismos no ofrece prediccion de terremotos ni alerta temprana oficial.
 
-- [Página principal](https://terracosismos.online/): Monitor de eventos recientes y registro de alertas.
-- [Historial](https://terracosismos.online/sismos): Listado consultable por lugar, magnitud y departamento.
-- [Estadísticas](https://terracosismos.online/estadisticas): Resúmenes calculados sobre los registros almacenados.
-- [Privacidad y cookies](https://terracosismos.online/privacidad): Consentimiento, categorías de tratamiento e inventario de cookies.
+## Paginas publicas
 
-## Datos
+- [Pagina principal y monitor](https://terracosismos.online/)
+- [Historial consultable](https://terracosismos.online/sismos)
+- [Estadisticas del sistema](https://terracosismos.online/estadisticas)
+- [Politica de privacidad](https://terracosismos.online/privacidad)
 
-- [API pública](https://terracosismos.online/api/earthquakes): Admite filtros `from`, `to`, `min_magnitude`, `max_magnitude`, `department`, `latitude`, `longitude` y `radius`.
-- [Servicio Geológico Colombiano](https://www.sgc.gov.co/sismos): Fuente oficial colombiana utilizada para reconciliación de eventos.
-- [EMSC SeismicPortal](https://www.seismicportal.eu/): Fuente internacional utilizada para recepción de eventos en tiempo casi real.
-- [Geoportal DANE](https://geoportal.dane.gov.co/): Fuente de referencia para municipios, departamentos y códigos DIVIPOLA.
+## Acceso a datos
 
-## Interpretación
+- [API publica de sismos](https://terracosismos.online/api/earthquakes)
+- [Sitemap del sitio](https://terracosismos.online/sitemap.xml)
+- [Archivo llms resumido](https://terracosismos.online/llms.txt)
 
-- [Unidad Nacional para la Gestión del Riesgo de Desastres](https://portal.gestiondelriesgo.gov.co/): Consulta las comunicaciones oficiales sobre gestión del riesgo en Colombia.
-- [Limitaciones de terracosismos](https://terracosismos.online/): Los eventos pueden ser preliminares y cambiar después de su publicación. La plataforma no predice terremotos ni ofrece alerta temprana oficial.
+La API admite filtros de fecha, magnitud, departamento, coordenadas y radio de busqueda.
+
+## Fuentes
+
+- [Servicio Geologico Colombiano](https://www.sgc.gov.co/sismos)
+- [EMSC SeismicPortal](https://www.seismicportal.eu/)
+- [USGS Earthquake Hazards Program](https://earthquake.usgs.gov/)
+- [GEOFON](https://geofon.gfz.de/)
+- [Geoportal DANE](https://geoportal.dane.gov.co/)
+
+Los reportes de varias fuentes se consolidan para reducir duplicados. SGC tiene prioridad para los parametros de eventos colombianos.
+
+## Privacidad
+
+terracosismos usa Klaro Open Source para administrar el consentimiento. La analitica y auditoria opcionales permanecen desactivadas hasta que el visitante las autoriza. Las acciones auditadas no incluyen el contenido escrito en formularios.
+
+- [Consultar privacidad y cookies](https://terracosismos.online/privacidad)
+
+## Interpretacion responsable
+
+- [Comunicaciones oficiales de gestion del riesgo](https://portal.gestiondelriesgo.gov.co/)
+- [Informacion oficial sobre sismos](https://www.sgc.gov.co/sismos)
+
+Ante un evento sismico importante se deben seguir las indicaciones del Servicio Geologico Colombiano y de las autoridades de gestion del riesgo.

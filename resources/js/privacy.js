@@ -1,7 +1,7 @@
 import axios from 'axios';
 import 'klaro/dist/klaro.css';
 
-const CONFIG_VERSION = '2026-08-11.1';
+const CONFIG_VERSION = '2026-08-11.2';
 let actionTrackingEnabled = false;
 
 const post = (url, data) => axios.post(url, data, {headers: {'X-Requested-With': 'XMLHttpRequest'}}).catch(() => {});
@@ -37,6 +37,7 @@ const config = {
     cookiePath: '/',
     default: false,
     mustConsent: false,
+    showNoticeTitle: true,
     acceptAll: true,
     hideDeclineAll: false,
     groupByPurpose: true,
@@ -45,6 +46,7 @@ const config = {
         es: {
             privacyPolicyUrl: '/privacidad',
             consentNotice: {
+                title: 'Privacidad y cookies en terracosismos',
                 description: 'Usamos cookies esenciales y, con tu permiso, analítica de visitas y servicios externos. Puedes aceptar, rechazar o personalizar.',
                 learnMore: 'Configurar',
             },
