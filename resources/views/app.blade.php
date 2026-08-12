@@ -10,6 +10,7 @@
     <meta name="robots" content="index, follow, max-image-preview:large">
     <meta name="theme-color" content="#71159d">
     <meta name="application-name" content="terracosismos">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="terracosismos">

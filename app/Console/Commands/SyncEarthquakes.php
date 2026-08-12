@@ -16,6 +16,7 @@ class SyncEarthquakes extends Command
         try {
             $r = $service->sync();
             $this->info("Recibidos: {$r['received']}; nuevos: {$r['created']}; actualizados: {$r['updated']}");
+            $this->table(['Fuente', 'Reportes'], collect($r['sources'])->map(fn ($total, $source) => [$source, $total])->values()->all());
 
             return self::SUCCESS;
         } catch (\Throwable $e) {

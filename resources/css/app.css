@@ -63,6 +63,78 @@ body {
     pointer-events: auto;
 }
 
+.pwa-install-banner {
+    position: fixed;
+    z-index: 45;
+    top: calc(84px + env(safe-area-inset-top));
+    left: 50%;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto auto;
+    align-items: center;
+    column-gap: 16px;
+    width: min(760px, calc(100vw - 28px));
+    padding: 14px 16px;
+    border: 1px solid #e7d7f2;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, .97);
+    box-shadow: 0 18px 48px rgba(53, 22, 77, .2);
+    color: #25143d;
+    transform: translateX(-50%);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+}
+
+.pwa-install-icon {
+    flex: 0 0 auto;
+    width: 44px;
+    height: 44px;
+    border-radius: 13px;
+}
+
+.pwa-install-copy {
+    min-width: 0;
+    display: grid;
+    gap: 2px;
+    line-height: 1.25;
+}
+
+.pwa-install-copy strong {
+    display: block;
+    font-size: .98rem;
+    line-height: 1.2;
+}
+
+.pwa-install-copy span {
+    color: #74667e;
+    font-size: .82rem;
+}
+
+.pwa-install-action {
+    min-width: 104px;
+    min-height: 44px;
+    padding: .65rem 1rem;
+    border: 0;
+    border-radius: 11px;
+    background: #861bc1;
+    color: #fff;
+    font-weight: 800;
+}
+
+.pwa-install-close {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    border: 0;
+    border-radius: 10px;
+    background: transparent;
+    color: #53465b;
+    font-size: 1.8rem;
+    line-height: 1;
+    justify-self: end;
+}
+
 .app-footer button,
 .app-footer a {
     transition: color .2s;
@@ -176,6 +248,53 @@ body {
         width: 100%;
         max-width: none;
         font-size: .9rem;
+    }
+
+    .pwa-install-banner {
+        top: calc(80px + env(safe-area-inset-top));
+        grid-template-columns: auto minmax(0, 1fr) auto;
+        column-gap: 10px;
+        row-gap: 9px;
+        width: calc(100vw - 24px);
+        padding: 10px 11px;
+        border-radius: 16px;
+    }
+
+    .pwa-install-icon {
+        grid-row: 1 / span 2;
+        width: 40px;
+        height: 40px;
+    }
+
+    .pwa-install-copy {
+        grid-column: 2;
+        grid-row: 1;
+    }
+
+    .pwa-install-copy strong {
+        font-size: .9rem;
+    }
+
+    .pwa-install-copy span {
+        font-size: .75rem;
+    }
+
+    .pwa-install-action {
+        grid-column: 2 / -1;
+        grid-row: 2;
+        width: 100%;
+        min-width: 0;
+        min-height: 38px;
+        padding: .5rem .65rem;
+        font-size: .8rem;
+    }
+
+    .pwa-install-close {
+        grid-column: 3;
+        grid-row: 1;
+        align-self: start;
+        width: 30px;
+        height: 30px;
     }
 
     .app-footer {

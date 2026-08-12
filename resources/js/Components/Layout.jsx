@@ -1,5 +1,6 @@
 import {Link, usePage} from '@inertiajs/react';
 import SystemToasts from './SystemToasts';
+import PwaInstallBanner from './PwaInstallBanner';
 
 const Icon = ({children}) => <span className="text-xl leading-none">{children}</span>;
 
@@ -9,6 +10,7 @@ export default function Layout({children}) {
 
     return <div className="app-shell">
         <SystemToasts/>
+        <PwaInstallBanner/>
         <a className="skip-link" href="#main-content">Saltar al contenido</a>
         <header className="app-header border-b border-purple-100/80 bg-white/85 sticky top-0 z-40 backdrop-blur-xl">
             <div className="max-w-[1500px] mx-auto px-4 md:px-7 h-[72px] flex items-center justify-between">

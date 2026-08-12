@@ -16,7 +16,15 @@ registerSW({
     onRegisterError: () => toast.error('No fue posible activar el modo sin conexión.', {id: 'pwa-error'}),
 });
 
-echo.channel('earthquakes').listen('.earthquake.received', () => router.reload({only: ['earthquakes', 'statistics']}));
+const refreshEarthquakes = () => router.reload({only: ['earthquakes', 'statistics'], preserveScroll: true});
+
+if (echo) {
+    echo.channel('earthquakes').listen('.earthquake.received', refreshEarthquakes);
+} else {
+    window.setInterval(() => {
+        if (document.visibilityState === 'visible') refreshEarthquakes();
+    }, 60_000);
+}
 router.on('navigate', event => trackPageView(new URL(event.detail.page.url, window.location.origin).pathname));
 
 createInertiaApp({

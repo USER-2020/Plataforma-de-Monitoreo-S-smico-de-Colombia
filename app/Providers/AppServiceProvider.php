@@ -7,6 +7,8 @@ use App\Notifications\NewEarthquakeAlert;
 use App\Services\Earthquake\EarthquakeProviderInterface;
 use App\Services\Earthquake\EarthquakeService;
 use App\Services\Earthquake\EmscEarthquakeProvider;
+use App\Services\Earthquake\GeofonEarthquakeProvider;
+use App\Services\Earthquake\MultiEarthquakeProvider;
 use App\Services\Earthquake\SgcEarthquakeProvider;
 use App\Services\Earthquake\UsgsEarthquakeProvider;
 use App\Services\Geography\DaneLocationService;
@@ -23,7 +25,14 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(EarthquakeProviderInterface::class, fn () => match (config('earthquakes.provider')) {
-            'sgc' => app(SgcEarthquakeProvider::class), 'emsc' => app(EmscEarthquakeProvider::class), default => app(UsgsEarthquakeProvider::class),
+            'sgc' => app(SgcEarthquakeProvider::class),
+            'emsc' => app(EmscEarthquakeProvider::class),
+            'usgs' => app(UsgsEarthquakeProvider::class),
+            'geofon' => app(GeofonEarthquakeProvider::class),
+            default => new MultiEarthquakeProvider([
+                app(SgcEarthquakeProvider::class), app(EmscEarthquakeProvider::class),
+                app(UsgsEarthquakeProvider::class), app(GeofonEarthquakeProvider::class),
+            ]),
         });
         $this->app->bind(EarthquakeService::class, fn () => new EarthquakeService(
             app(EarthquakeProviderInterface::class), app(DaneLocationService::class)

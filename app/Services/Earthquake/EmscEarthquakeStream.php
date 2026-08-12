@@ -5,12 +5,11 @@ namespace App\Services\Earthquake;
 use App\Data\EarthquakeData;
 use App\Events\EarthquakeReceived;
 use App\Models\Earthquake;
-use App\Services\Geography\DaneLocationService;
 use Carbon\CarbonImmutable;
 
 class EmscEarthquakeStream
 {
-    public function __construct(private EarthquakeService $service, private DaneLocationService $dane) {}
+    public function __construct(private EarthquakeService $service) {}
 
     public function ingest(string $message): ?Earthquake
     {
@@ -20,12 +19,8 @@ class EmscEarthquakeStream
             return null;
         }
         $data = $this->normalize($payload, $properties);
-        $location = $this->dane->locate($data->latitude, $data->longitude);
-        $earthquake = Earthquake::updateOrCreate(
-            ['external_id' => $data->externalId, 'source' => $data->source],
-            [...$data->toArray(), ...($location ?? [])],
-        );
-        if ($earthquake->wasRecentlyCreated) {
+        [$earthquake, $created] = $this->service->ingest($data);
+        if ($created) {
             $this->service->notifySubscribers($earthquake);
         }
         EarthquakeReceived::dispatch($earthquake->fresh());

@@ -3,6 +3,8 @@
 namespace App\Services\Earthquake;
 
 use App\Models\Earthquake;
+use App\Data\EarthquakeData;
+use App\Models\EarthquakeSourceReport;
 use App\Models\EarthquakeSubscriber;
 use App\Models\EarthquakeSyncLog;
 use App\Notifications\NewEarthquakeAlert;
@@ -24,26 +26,84 @@ class EarthquakeService
         try {
             $events = $this->provider->latest();
             foreach ($events as $event) {
-                $model = Earthquake::query()->where(['external_id' => $event->externalId, 'source' => $event->source])->first();
-                $location = $this->dane?->locate($event->latitude, $event->longitude);
-                Earthquake::updateOrCreate(['external_id' => $event->externalId, 'source' => $event->source], [...$event->toArray(), ...($location ?? [])]);
-                if ($model) {
-                    $updated++;
-                } else {
+                [$model, $wasCreated] = $this->ingest($event);
+                if ($wasCreated) {
                     $created++;
-                    $newEvents->push(Earthquake::where(['external_id' => $event->externalId, 'source' => $event->source])->first());
+                    $newEvents->push($model);
+                } else {
+                    $updated++;
                 }
             }
             $newEvents->each(fn (Earthquake $earthquake) => $this->notifySubscribers($earthquake));
             $log->update(['finished_at' => now(), 'status' => 'success', 'events_received' => count($events), 'events_created' => $created, 'events_updated' => $updated]);
-            Cache::flush();
+            Cache::forget('earthquakes.statistics');
 
-            return compact('created', 'updated') + ['received' => count($events)];
+            $sources = collect($events)->countBy(fn (EarthquakeData $event) => $event->source)->all();
+
+            return compact('created', 'updated', 'sources') + ['received' => count($events)];
         } catch (Throwable $e) {
             $log->update(['finished_at' => now(), 'status' => 'failed', 'error_message' => $e->getMessage()]);
             Log::error('Earthquake synchronization failed', ['provider' => $this->provider->name(), 'exception' => $e]);
             throw $e;
         }
+    }
+
+    public function ingest(EarthquakeData $event): array
+    {
+        $report = EarthquakeSourceReport::query()->where([
+            'provider' => $event->source, 'external_id' => $event->externalId,
+        ])->first();
+        $earthquake = $report?->earthquake ?: $this->findMatchingEvent($event);
+        $created = false;
+
+        if (! $earthquake) {
+            $location = $this->dane?->locate($event->latitude, $event->longitude);
+            $earthquake = Earthquake::create([...$event->toArray(), ...($location ?? [])]);
+            $created = true;
+        } elseif ($this->shouldPromote($earthquake->source, $event->source)) {
+            $location = $this->dane?->locate($event->latitude, $event->longitude);
+            $earthquake->update([...$event->toArray(), ...($location ?? [])]);
+        }
+
+        EarthquakeSourceReport::updateOrCreate(
+            ['provider' => $event->source, 'external_id' => $event->externalId],
+            ['earthquake_id' => $earthquake->id, 'magnitude' => $event->magnitude,
+                'latitude' => $event->latitude, 'longitude' => $event->longitude,
+                'depth_km' => $event->depth, 'occurred_at' => $event->occurredAt,
+                'source_url' => $event->sourceUrl, 'raw_data' => $event->rawData],
+        );
+
+        return [$earthquake->fresh()->loadCount('sourceReports'), $created];
+    }
+
+    private function findMatchingEvent(EarthquakeData $event): ?Earthquake
+    {
+        $seconds = (int) config('earthquakes.deduplication.seconds', 90);
+        $distance = (float) config('earthquakes.deduplication.distance_km', 50);
+        $magnitudeDelta = (float) config('earthquakes.deduplication.magnitude_delta', 0.8);
+
+        return Earthquake::query()
+            ->whereBetween('occurred_at', [$event->occurredAt->subSeconds($seconds), $event->occurredAt->addSeconds($seconds)])
+            ->whereBetween('magnitude', [$event->magnitude - $magnitudeDelta, $event->magnitude + $magnitudeDelta])
+            ->get()
+            ->sortBy(fn (Earthquake $candidate) => abs($candidate->occurred_at->diffInSeconds($event->occurredAt)))
+            ->first(fn (Earthquake $candidate) => $this->distanceKm($candidate->latitude, $candidate->longitude, $event->latitude, $event->longitude) <= $distance);
+    }
+
+    private function distanceKm(float $lat1, float $lon1, float $lat2, float $lon2): float
+    {
+        $latDelta = deg2rad($lat2 - $lat1);
+        $lonDelta = deg2rad($lon2 - $lon1);
+        $a = sin($latDelta / 2) ** 2 + cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * sin($lonDelta / 2) ** 2;
+
+        return 6371 * 2 * atan2(sqrt($a), sqrt(1 - $a));
+    }
+
+    private function shouldPromote(string $current, string $incoming): bool
+    {
+        $priority = config('earthquakes.source_priority', []);
+
+        return ($priority[$incoming] ?? 99) <= ($priority[$current] ?? 99);
     }
 
     public function filtered(array $filters = []): Builder
@@ -55,7 +115,7 @@ class EarthquakeService
 
     public function recent(int $days = 7, int $limit = 100)
     {
-        return Earthquake::recent($days)->latest('occurred_at')->limit($limit)->get();
+        return Earthquake::recent($days)->withCount('sourceReports')->latest('occurred_at')->limit($limit)->get();
     }
 
     public function statistics(): array
@@ -80,6 +140,11 @@ class EarthquakeService
 
     public function notifySubscribers(Earthquake $earthquake): void
     {
+        if ($earthquake->occurred_at->lt(now()->subMinutes(config('earthquakes.alert_max_age_minutes', 30)))) {
+            Log::info('Sismo histórico almacenado sin generar alertas', ['earthquake_id' => $earthquake->id]);
+            return;
+        }
+
         EarthquakeSubscriber::query()->where('is_active', true)
             ->where('min_magnitude', '<=', $earthquake->magnitude)
             ->where(fn ($query) => $query->whereNull('department')->orWhere('department', $earthquake->department))

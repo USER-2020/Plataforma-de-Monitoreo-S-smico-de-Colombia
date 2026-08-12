@@ -17,7 +17,9 @@ class UsgsEarthquakeProvider implements EarthquakeProviderInterface
     {
         $response = Http::acceptJson()->retry(2, 300)->timeout(15)->get(config('earthquakes.providers.usgs.url'), [
             'format' => 'geojson', 'starttime' => now()->subDays(config('earthquakes.sync_days'))->toIso8601String(),
-            'minlatitude' => -4.5, 'maxlatitude' => 13.7, 'minlongitude' => -82, 'maxlongitude' => -66,
+            'minmagnitude' => 0,
+            'minlatitude' => config('earthquakes.coverage.min_lat'), 'maxlatitude' => config('earthquakes.coverage.max_lat'),
+            'minlongitude' => config('earthquakes.coverage.min_lon'), 'maxlongitude' => config('earthquakes.coverage.max_lon'),
         ])->throw()->json();
 
         return array_values(array_filter(array_map(fn (array $feature) => $this->normalize($feature), $response['features'] ?? [])));

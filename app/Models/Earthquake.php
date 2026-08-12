@@ -14,6 +14,11 @@ class Earthquake extends Model
 
     protected $casts = ['magnitude' => 'float', 'latitude' => 'float', 'longitude' => 'float', 'depth_km' => 'float', 'occurred_at' => 'immutable_datetime', 'raw_data' => 'array'];
 
+    public function sourceReports()
+    {
+        return $this->hasMany(EarthquakeSourceReport::class);
+    }
+
     public function scopeMagnitude(Builder $query, ?float $min = null, ?float $max = null): Builder
     {
         return $query->when($min !== null, fn ($q) => $q->where('magnitude', '>=', $min))->when($max !== null, fn ($q) => $q->where('magnitude', '<=', $max));
