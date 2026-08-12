@@ -1,19 +1,53 @@
-import {useEffect} from 'react';
-import {usePage} from '@inertiajs/react';
+import {useEffect, useRef} from 'react';
+import {router, usePage} from '@inertiajs/react';
 import {Toaster, toast} from 'react-hot-toast';
 
 export default function SystemToasts() {
     const {errors = {}, flash = {}} = usePage().props;
-    useEffect(() => {
-        const messages = [flash?.success, flash?.error, ...Object.values(errors)].filter(Boolean);
-        if (!messages.length) return;
+    const lastFlashRef = useRef(null);
+    const lastErrorsRef = useRef(null);
 
-        if (flash?.success) toast.success(flash.success, {id: `success-${flash.success}`});
-        if (flash?.error) toast.error(flash.error, {id: `error-${flash.error}`});
-        Object.entries(errors).forEach(([field, message]) => {
+    useEffect(() => {
+        const success = flash?.success;
+        const error = flash?.error;
+
+        if (!success && !error) {
+            lastFlashRef.current = null;
+            return;
+        }
+
+        const flashKey = JSON.stringify([success ?? null, error ?? null]);
+
+        if (lastFlashRef.current === flashKey) return;
+
+        lastFlashRef.current = flashKey;
+
+        if (success) toast.success(success, {id: `success-${success}`});
+        if (error) toast.error(error, {id: `error-${error}`});
+
+        // A partial Inertia reload (for example, a WebSocket update) preserves
+        // omitted props. Consume the flash locally so it cannot be shown again.
+        router.replaceProp('flash', {});
+    }, [flash?.error, flash?.success]);
+
+    useEffect(() => {
+        const entries = Object.entries(errors).filter(([, message]) => Boolean(message));
+
+        if (!entries.length) {
+            lastErrorsRef.current = null;
+            return;
+        }
+
+        const errorsKey = JSON.stringify(entries);
+
+        if (lastErrorsRef.current === errorsKey) return;
+
+        lastErrorsRef.current = errorsKey;
+
+        entries.forEach(([field, message]) => {
             toast.error(message, {id: `validation-${field}-${message}`});
         });
-    }, [errors, flash]);
+    }, [errors]);
 
     return <Toaster position="top-right" containerClassName="system-toaster" gutter={10} toastOptions={{
         duration: 5000,
